@@ -1,0 +1,21 @@
+<Window x:Class="MapleAuctionSniper.Desktop.NotificationSettingsWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="通知設定" Width="620" Height="340" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+ <Grid Margin="20">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock Text="Discord 通知" FontSize="20" Margin="0,0,0,14"/>
+  <StackPanel Grid.Row="1" IsEnabled="{Binding CanEdit}">
+   <CheckBox AutomationProperties.AutomationId="DiscordEnabled" Content="啟用 Discord 低價通知" IsChecked="{Binding Enabled}" Margin="0,0,0,14"/>
+   <TextBlock Text="目標頻道的 Webhook URL"/>
+   <TextBox AutomationProperties.AutomationId="DiscordWebhookUrl" Text="{Binding WebhookUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,8" Padding="6"/>
+   <TextBlock Text="Webhook 已綁定頻道；換頻道時貼上該頻道的 Webhook。測試通知會發送至目前填入的 URL，儲存後才套用至掃描。" TextWrapping="Wrap" Foreground="#555555"/>
+  </StackPanel>
+  <TextBlock Grid.Row="2" AutomationProperties.AutomationId="NotificationSettingsStatus" Text="{Binding Status}" TextWrapping="Wrap" Margin="0,16,0,10"/>
+  <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+   <Button AutomationProperties.AutomationId="TestDiscordNotification" Content="發送測試通知" Command="{Binding TestCommand}" Padding="12,6"/>
+   <Button AutomationProperties.AutomationId="SaveNotificationSettings" Content="儲存" Command="{Binding SaveCommand}" Padding="12,6" Margin="10,0,0,0"/>
+   <Button Content="關閉" IsCancel="True" Padding="12,6" Margin="10,0,0,0"/>
+  </StackPanel>
+ </Grid>
+</Window>

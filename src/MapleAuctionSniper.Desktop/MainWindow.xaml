@@ -1,0 +1,143 @@
+<Window x:Class="MapleAuctionSniper.Desktop.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="MapleAuctionSniper — 拍賣場查詢" Width="1450" Height="850" MinWidth="1000" MinHeight="650">
+ <Window.Resources>
+  <Style TargetType="TextBox"><Setter Property="Padding" Value="5,4"/></Style>
+  <Style TargetType="ComboBox"><Setter Property="Padding" Value="5,4"/></Style>
+ </Window.Resources>
+ <Grid Margin="16">
+  <Grid.ColumnDefinitions><ColumnDefinition Width="350"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <DockPanel Grid.ColumnSpan="2" Margin="0,0,0,12">
+   <Button x:Name="NotificationSettingsButton" AutomationProperties.AutomationId="OpenNotificationSettings" Content="通知設定" Click="OpenNotificationSettings" DockPanel.Dock="Right" Padding="12,6"/>
+   <TextBlock FontSize="20" Text="拍賣場模擬監控" VerticalAlignment="Center"/>
+  </DockPanel>
+  <Border Grid.Row="1" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,16,0" Background="#F5F7F8">
+   <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="14" IsEnabled="{Binding CanEditSearch}">
+     <GroupBox Header="已儲存的搜尋條件" Margin="0,0,0,14">
+      <StackPanel Margin="8">
+       <ComboBox AutomationProperties.AutomationId="SavedPresets" ItemsSource="{Binding Presets}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedPreset}"/>
+       <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
+        <Button AutomationProperties.AutomationId="ApplyPreset" Content="快速套用" Command="{Binding ApplyPresetCommand}" Padding="10,5"/>
+        <Button AutomationProperties.AutomationId="DeletePreset" Content="刪除" Command="{Binding DeletePresetCommand}" Padding="10,5" Margin="8,0,0,0"/>
+       </StackPanel>
+       <TextBlock Text="條件名稱"/>
+       <TextBox AutomationProperties.AutomationId="PresetName" Text="{Binding PresetName, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,8"/>
+       <Button AutomationProperties.AutomationId="SavePreset" Content="儲存目前條件（同名更新）" Command="{Binding SavePresetCommand}" Padding="10,5"/>
+      </StackPanel>
+     </GroupBox>
+     <TextBlock Text="進階搜尋" FontSize="18" Margin="0,0,0,12"/>
+     <ComboBox AutomationProperties.AutomationId="ItemCategory" ItemsSource="{Binding Categories}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedCategory}"/>
+     <TextBlock Text="道具分類" Margin="0,14,0,5"/>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <ComboBox AutomationProperties.AutomationId="Classification" IsEditable="True" ItemsSource="{Binding UnrestrictedOptions}" Text="{Binding Classification, UpdateSourceTrigger=PropertyChanged}"/>
+      <ComboBox Grid.Column="2" AutomationProperties.AutomationId="Subclassification" IsEditable="True" ItemsSource="{Binding UnrestrictedOptions}" Text="{Binding Subclassification, UpdateSourceTrigger=PropertyChanged}"/>
+     </Grid>
+     <Grid Margin="0,12,0,0">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <StackPanel><TextBlock Text="潛在能力" Margin="0,0,0,5"/><ComboBox AutomationProperties.AutomationId="Potential" ItemsSource="{Binding PotentialOptions}" SelectedItem="{Binding Potential}"/></StackPanel>
+      <StackPanel Grid.Column="2"><TextBlock Text="附加潛在能力" Margin="0,0,0,5"/><ComboBox AutomationProperties.AutomationId="AdditionalPotential" ItemsSource="{Binding PotentialOptions}" SelectedItem="{Binding AdditionalPotential}"/></StackPanel>
+     </Grid>
+     <Separator Margin="0,14,0,10"/>
+     <TextBlock Text="道具名稱" Margin="0,0,0,5"/>
+     <TextBox AutomationProperties.AutomationId="EquipmentName" Text="{Binding EquipmentName, UpdateSourceTrigger=PropertyChanged}"/>
+     <CheckBox Content="名稱完全符合" IsChecked="{Binding ExactName}" Margin="0,6,0,12"/>
+     <TextBlock Text="等級範圍" Margin="0,0,0,5"/>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="24"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <TextBox AutomationProperties.AutomationId="MinimumLevel" Text="{Binding MinimumLevel, UpdateSourceTrigger=PropertyChanged}"/>
+      <TextBlock Grid.Column="1" Text="－" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      <TextBox AutomationProperties.AutomationId="MaximumLevel" Text="{Binding MaximumLevel, UpdateSourceTrigger=PropertyChanged}"/>
+     </Grid>
+     <TextBlock Text="價格" Margin="0,12,0,5"/>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="24"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <TextBox AutomationProperties.AutomationId="MinimumPrice" Text="{Binding MinimumPrice, UpdateSourceTrigger=PropertyChanged}"/>
+      <TextBlock Grid.Column="1" Text="－" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      <TextBox AutomationProperties.AutomationId="MaximumPrice" Text="{Binding MaximumPrice, UpdateSourceTrigger=PropertyChanged}"/>
+     </Grid>
+     <Separator Margin="0,14,0,10"/>
+     <DockPanel Margin="0,0,0,8">
+      <TextBlock Text="詳細搜尋" FontWeight="Bold"/>
+      <RadioButton AutomationProperties.AutomationId="DetailAnd" Content="AND" GroupName="DetailMode" IsChecked="{Binding IsAnd}" Margin="12,0,0,0"/>
+      <RadioButton AutomationProperties.AutomationId="DetailOr" Content="OR" GroupName="DetailMode" IsChecked="{Binding IsOr}" Margin="12,0,0,0"/>
+      <TextBlock Text="最小值" HorizontalAlignment="Right"/>
+     </DockPanel>
+     <ItemsControl ItemsSource="{Binding DetailRows}">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <Grid Margin="0,0,0,8">
+         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition Width="76"/></Grid.ColumnDefinitions>
+         <ComboBox ItemsSource="{Binding Options}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedStat}"/>
+         <TextBox Grid.Column="2" Text="{Binding Minimum, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="留空／全體代表不限。道具分類可直接輸入；詳細欄位目前提供已建模的七項素質。" TextWrapping="Wrap" Foreground="#555555" FontSize="12" Margin="0,4,0,12"/>
+     <Button Content="建立／更新監控條件" Command="{Binding CreateRuleCommand}" Padding="12,6"/>
+     <GroupBox Header="低價通知設定" Margin="0,16,0,0">
+      <StackPanel Margin="8"><TextBlock Text="歷史價格折扣門檻 (>0 且 ≤1)"/><TextBox AutomationProperties.AutomationId="DiscountThreshold" Text="{Binding DiscountThreshold, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0"/></StackPanel>
+     </GroupBox>
+    </StackPanel>
+   </ScrollViewer>
+  </Border>
+  <Grid Grid.Row="1" Grid.Column="1">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+   <StackPanel Margin="0,0,0,12">
+    <GroupBox Header="定時監控多個道具" Margin="0,0,0,12">
+     <StackPanel Margin="10">
+      <StackPanel Orientation="Horizontal">
+       <TextBlock Text="搜尋間隔（分鐘）" VerticalAlignment="Center"/>
+       <TextBox AutomationProperties.AutomationId="MonitoringInterval" Text="{Binding IntervalMinutes, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEditSearch}" Width="80" Margin="10,0,12,0"/>
+       <Button AutomationProperties.AutomationId="StartMonitoring" Content="開始監控" Command="{Binding StartMonitoringCommand}" Padding="10,5"/>
+       <Button AutomationProperties.AutomationId="StopMonitoring" Content="停止監控" Command="{Binding StopMonitoringCommand}" Padding="10,5" Margin="8,0,0,0"/>
+      </StackPanel>
+      <TextBlock Text="勾選要一起監控的已儲存條件；開始時立即掃描，之後每輪完成再等待指定分鐘數。修改條件或間隔前請先停止。" TextWrapping="Wrap" Margin="0,8,0,5"/>
+      <ScrollViewer MaxHeight="110" VerticalScrollBarVisibility="Auto" IsEnabled="{Binding CanEditSearch}">
+       <ItemsControl ItemsSource="{Binding MonitorSelections}">
+        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate><DataTemplate>
+         <CheckBox Content="{Binding Preset.Name}" IsChecked="{Binding IsSelected}" Margin="0,4,20,4"/>
+        </DataTemplate></ItemsControl.ItemTemplate>
+       </ItemsControl>
+      </ScrollViewer>
+      <TextBlock AutomationProperties.AutomationId="MonitoringStatus" Text="{Binding MonitoringStatus}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+      <TextBlock Text="{Binding NextScanAt, StringFormat=下次掃描：{0:yyyy-MM-dd HH:mm:ss}, TargetNullValue=下次掃描：—}" Margin="0,4,0,0"/>
+     </StackPanel>
+    </GroupBox>
+    <Button Content="執行一次模擬掃描" Command="{Binding ScanCommand}" HorizontalAlignment="Left" Padding="12,6"/>
+    <TextBlock Text="掃描使用虛構裝備、價格及歷史；啟用 Discord 後，符合低價條件的模擬裝備也會實際通知至設定頻道。" TextWrapping="Wrap" Margin="0,8,0,0"/>
+   </StackPanel>
+   <DataGrid Grid.Row="1" ItemsSource="{Binding Results}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="裝備" Binding="{Binding Listing.Equipment.Name}"/>
+     <DataGridTextColumn Header="符合的搜尋條件" Binding="{Binding MatchedSearchNames}"/>
+     <DataGridTextColumn Header="等級" Binding="{Binding Listing.Equipment.RequiredLevel}"/>
+     <DataGridTextColumn Header="分類" Binding="{Binding Listing.Equipment.SearchAttributes.Classification}"/>
+     <DataGridTextColumn Header="子分類" Binding="{Binding Listing.Equipment.SearchAttributes.Subclassification}"/>
+     <DataGridTextColumn Header="潛在能力" Binding="{Binding Listing.Equipment.SearchAttributes.Potential}"/>
+     <DataGridTextColumn Header="附加潛能" Binding="{Binding Listing.Equipment.SearchAttributes.AdditionalPotential}"/>
+     <DataGridTextColumn Header="價格" Binding="{Binding Listing.Price.Amount, StringFormat=N0}"/>
+     <DataGridTextColumn Header="STR" Binding="{Binding Listing.Equipment.Stats.STR}"/>
+     <DataGridTextColumn Header="DEX" Binding="{Binding Listing.Equipment.Stats.DEX}"/>
+     <DataGridTextColumn Header="INT" Binding="{Binding Listing.Equipment.Stats.INT}"/>
+     <DataGridTextColumn Header="LUK" Binding="{Binding Listing.Equipment.Stats.LUK}"/>
+     <DataGridTextColumn Header="物攻" Binding="{Binding Listing.Equipment.Stats.WeaponAttack}"/>
+     <DataGridTextColumn Header="魔攻" Binding="{Binding Listing.Equipment.Stats.MagicAttack}"/>
+     <DataGridTextColumn Header="升級次數" Binding="{Binding Listing.Equipment.Stats.UpgradeSlots}"/>
+     <DataGridTextColumn Header="歷史中位數" Binding="{Binding Evaluation.HistoricalMedianPrice.Amount, StringFormat=N0}"/>
+     <DataGridCheckBoxColumn Header="符合查詢" Binding="{Binding Evaluation.MatchesCriteria}"/>
+     <DataGridCheckBoxColumn Header="低價" Binding="{Binding Evaluation.IsPotentialDeal}"/>
+     <DataGridCheckBoxColumn Header="通知" Binding="{Binding NotificationTriggered}"/>
+     <DataGridTextColumn Header="通知錯誤" Binding="{Binding NotificationError}"/>
+     <DataGridTextColumn Header="原因" Binding="{Binding Evaluation.Reason}"/>
+    </DataGrid.Columns>
+   </DataGrid>
+  </Grid>
+  <TextBlock Grid.Row="2" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ScanStatus" Text="{Binding Status}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+ </Grid>
+</Window>
